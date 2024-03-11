@@ -1,0 +1,28 @@
+.unexistent {
+    
+    &__section {
+        height: 50vh;
+        padding: 10vh 30px 0;
+        text-align: center;
+        font-size: 40px;
+        line-height: 1.2;
+    }
+}
+
+@media (max-width: 1439px) {
+  
+}
+
+@media (max-width: 991px) {
+    .unexistent__section {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 767px) {
+  
+}
+
+@media (max-width: 575px) {
+  
+}

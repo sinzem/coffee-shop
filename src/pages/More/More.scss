@@ -1,0 +1,38 @@
+.more {
+    &__section {
+        padding: 80px 30px;
+        background: url("../../assets/img/main_best_paper-bg.png") center no-repeat;
+        background-size: cover;
+        &__block {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            line-height: 1.4;
+            font-size: 16px;
+        }
+        &__block p {
+            margin-top: 30px;
+        }
+    }
+   
+}
+
+@media (max-width: 1439px) {
+    .more__section__block {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 991px) {
+    .more__section__block {
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 767px) {
+  
+}
+
+@media (max-width: 575px) {
+  
+}

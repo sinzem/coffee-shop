@@ -1,0 +1,31 @@
+.home_about {
+  padding: 80px 30px 100px;
+}
+.home_about__description {
+  margin: 30px auto 0;
+  max-width: 700px;
+  text-align: center;
+}
+.home_about__description p {
+  margin-top: 20px;
+  line-height: 1.4;
+}
+.home_best {
+  padding: 80px 0 100px;
+  width: 100%;
+  height: -moz-fit-content;
+  height: fit-content;
+  background: url("../../assets/img/main_best_paper-bg.png") center no-repeat;
+  background-size: cover;
+}
+
+@media (max-width: 1439px) {
+  .home_about__description {
+    max-width: 600px;
+  }
+}
+@media (max-width: 767px) {
+  .home_about {
+    padding: 70px 30px 80px;
+  }
+}/*# sourceMappingURL=Home.css.map */

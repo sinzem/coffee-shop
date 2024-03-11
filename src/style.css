@@ -1,0 +1,6 @@
+@import "./style/reset.css";
+@import "./style/fonts.css";
+@import "./style/text.css";
+* {
+  font-family: Merienda;
+}/*# sourceMappingURL=style.css.map */
