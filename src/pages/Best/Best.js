@@ -28,6 +28,10 @@ const Best = () => {
         window.scrollTo(0, 0);
     }, [])
 
+    useEffect(() => {
+        setCoffeeBest(coffeeList);
+    }, [coffeeList]);
+
     return (
         <div>
             <Header src={imgForBestBg} title="For Your Pleasure"/>

@@ -63,6 +63,10 @@ const Coffee = () => {
     }, [])
 
     useEffect(() => {
+        setCoffeeAll(coffeeList);
+    }, [coffeeList])
+
+    useEffect(() => {
         let newArr = searchFromCoffeeAll(searchName, coffeeList, "name");
         setCoffeeAll(newArr);
         console.log("render 1")

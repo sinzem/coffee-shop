@@ -28,7 +28,7 @@ const CoffeeCard = () => {
     useEffect(() => {   
         let id = searchId(getId.id.slice(1), coffeeList);
         setCoffeeCardId(id);
-    }, [getId]);
+    }, [getId, coffeeList]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
