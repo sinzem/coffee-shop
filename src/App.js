@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import "./style.css";
@@ -16,6 +16,7 @@ function App() {
   const [coffeeList, setCoffeeList] = useState([]);
 
   const getCoffeeList = async () => {
+    setError(null);
     setIsLoading(true);
     
       let response = await fetch("./db.json")
@@ -28,7 +29,9 @@ function App() {
         setIsLoading(false);
       })
 
-  return response;
+    // const clearError = useCallback(() => setError(null), []); 
+
+    return response;
   };
 
   useEffect(() => {
