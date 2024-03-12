@@ -15,18 +15,19 @@ const CoffeeCard = () => {
 
     const getId = useParams();
     
-    const {coffeeList, isLoading, error} = useContext(List);
+    const {coffeeList, isLoading, error, setError} = useContext(List);
     const [coffeeCardId, setCoffeeCardId] = useState([]);
 
     function searchId(property, arr) {
         if (property === "") {
             setCoffeeCardId([]);
         } 
-        return arr.filter(item => +item.id === +getId.id.replace(/:/g, "") ? item : null);
+        return arr.filter(item => +item.id === +getId.id ? item : null);
     }
 
     useEffect(() => {   
-        let id = searchId(getId.id.slice(1), coffeeList);
+        setError(null);
+        let id = searchId(getId.id.replace(/:/g, ""), coffeeList);
         setCoffeeCardId(id);
     }, [getId, coffeeList]);
 
