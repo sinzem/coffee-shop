@@ -1,7 +1,8 @@
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { List } from "../../context";
 import "./Best.css";
+import { useFetching } from "../../context/request";
+
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import Divider from "../../components/Divider/Divider";
@@ -13,9 +14,13 @@ import imgForAbout from "../../assets/img/for-your-pleasure_description_coffee.p
 
 const Best = () => {
 
-    const {coffeeList} = useContext(List);
+    const [fetching, isLoading, error] = useFetching(async () => {
+        let response = await fetch("./db.json");
+        let data = await response.json();
+        setCoffeeBest(data);
+    });
 
-    const [coffeeBest, setCoffeeBest] = useState(coffeeList);
+    const [coffeeBest, setCoffeeBest] = useState([]);
     const [offsetBest, setOffsetBest] = useState(6);
 
     function moreOffsetBest() {
@@ -26,11 +31,8 @@ const Best = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        fetching();
     }, [])
-
-    useEffect(() => {
-        setCoffeeBest(coffeeList);
-    }, [coffeeList]);
 
     return (
         <div>
@@ -56,11 +58,28 @@ const Best = () => {
             </section>
             <section className="best-list">
                 <div className="best-list__divider"></div>
-                <div className="coffee-list-block__cards-block">
-                        <CardsBlock offset={offsetBest} coffeeList={coffeeBest} countryView={false}/>
-                        {coffeeBest.length - offsetBest > 0 ? 
-                        <Button callback={moreOffsetBest}/> : null }
-                    </div>
+                {isLoading 
+                    ? 
+                        <h2 className="subtitle" style={{marginTop: 10}}>Loading...</h2> 
+                    :
+                        error
+                    ? 
+                        <>
+                            <h2 className="subtitle" style={{marginTop: 50}}>Sorry, there was an error</h2> 
+                            <h2 className="subtitle" style={{marginTop: 20}}>{error}</h2> 
+                        </>
+                    :
+                    //     coffeeBest.length > 0
+                    // ?
+                        <div className="coffee-list-block__cards-block">
+                            <CardsBlock offset={offsetBest} coffeeList={coffeeBest} countryView={false}/>
+                            {coffeeBest.length - offsetBest > 0 ? 
+                            <Button callback={moreOffsetBest}/> : null }
+                        </div>
+                    // :
+                    //     <h2 className="subtitle" style={{marginTop: 50}}>Sorry, no products available today</h2> 
+                }
+                
             </section>
             <Footer/>
         </div>

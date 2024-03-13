@@ -1,27 +1,31 @@
-
-import { useContext, useEffect, useState } from "react";
-import { List } from "../../context";
+import { useEffect, useState } from "react";
 
 import "./Coffee.css";
+import { useFetching } from "../../context/request";
+
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import CardsBlock from "../../components/CardsBlock/CardsBlock";
 import Button from "../../components/button/Button";
+import Divider from "../../components/Divider/Divider";
 
 import imgBg from "../../assets/img/our-coffee_header_bg.jpg";
 import imgCoffeeAbout from "../../assets/img/our-coffee_description_girl.jpg";
-import Divider from "../../components/Divider/Divider";
-
 
 const Coffee = () => {
 
-    const {coffeeList} = useContext(List);
+    const [fetching, isLoading, error] = useFetching(async () => {
+        let response = await fetch("./db.json");
+        let data = await response.json();
+        setCoffeeList(data);
+        setCoffeeAll(data);
+    });
 
-    const [coffeeAll, setCoffeeAll] = useState(coffeeList);
+    const [coffeeList, setCoffeeList] = useState([]);
+    const [coffeeAll, setCoffeeAll] = useState([]);
     const [offsetAll, setOffsetAll] = useState(6);
     const [searchName, setSearchName] = useState("");
     const [originFilter, setOriginFilter] = useState("");
-    // const [activeButton, setActiveButton] = useState("");
 
     function moreOffsetAll() {
         if ((coffeeAll.length - offsetAll) > 0) {
@@ -39,44 +43,37 @@ const Coffee = () => {
             return item[nx].toLowerCase().indexOf(property.toLowerCase()) > -1
         })
     }
-
-    // function forOriginalFilter(e) {
-    //     console.log(e);
-    //     setSearchName("");
-    //     setOriginFilter(e);
-    // }
  
-        function onSetSearchName(val) {
-            setOriginFilter("");
-            setSearchName(val);
-        }
+    function onSetSearchName(val) {
+        setOriginFilter("");
+        setSearchName(val);
+    }
 
 
-        function onSetOriginFilter(val) {
-            setSearchName("");
-            setOriginFilter(val);
-        }
+    function onSetOriginFilter(val) {
+        setSearchName("");
+        setOriginFilter(val);
+    }
     
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        fetching();
     }, [])
 
-    useEffect(() => {
-        setCoffeeAll(coffeeList);
-    }, [coffeeList])
+    // useEffect(() => {
+    //     setCoffeeAll(coffeeList);
+    // }, [coffeeList])
 
     useEffect(() => {
         let newArr = searchFromCoffeeAll(searchName, coffeeList, "name");
         setCoffeeAll(newArr);
-        console.log("render 1")
     }, [searchName]);
 
 
     useEffect(() => {
         let newCountryArr = searchFromCoffeeAll(originFilter, coffeeList, "country")
         setCoffeeAll(newCountryArr);
-        console.log("render 2")
     }, [originFilter]);
 
     
@@ -133,32 +130,31 @@ const Coffee = () => {
                             <div className="coffee-list-block__filters_label">Or filter</div>
                             <div className="coffee-list-block__filters_buttons">
                                 {button}
-                                {/* <button className={`coffee-list-block__filters_button`} 
-                                        onClick={(e) => forOriginalFilter(e.target)}>
-                                            Brasil
-                                </button>
-                                <button className="coffee-list-block__filters_button" 
-                                        onClick={(e) => forOriginalFilter(e.target)}>
-                                            Kenya
-                                </button>
-                                <button className="coffee-list-block__filters_button" 
-                                        onClick={(e) => forOriginalFilter(e.target)}>
-                                            Columbia
-                                </button> */}
                             </div>
                         </div>
                     </div>
                     <div className="coffee-list-block__cards-block">
-                        {coffeeAll.length > 0 
-                            ?
+                        {isLoading 
+                            ? 
+                                <h2 className="subtitle" style={{marginTop: 100}}>Loading...</h2> 
+                            :
+                                error
+                            ? 
                                 <>
-                                    <CardsBlock offset={offsetAll} coffeeList={coffeeAll} countryView={false}/>
-                                    {coffeeAll.length - offsetAll > 0 ? 
-                                        <Button callback={moreOffsetAll}/> : null}
-                                </>
-                            : 
-                                <h2 className="subtitle" style={{margin: "300px 0px"}}>No products found for this request</h2>
-                            }
+                                    <h2 className="subtitle" style={{marginTop: 100}}>Sorry, there was an error</h2> 
+                                    <h2 className="subtitle" style={{marginTop: 50}}>{error}</h2> 
+                                </> 
+                            :
+                                coffeeAll.length > 0 
+                                    ?
+                                        <>
+                                            <CardsBlock offset={offsetAll} coffeeList={coffeeAll} countryView={false}/>
+                                            {coffeeAll.length - offsetAll > 0 ? 
+                                                <Button callback={moreOffsetAll}/> : null}
+                                        </>
+                                    : 
+                                        <h2 className="subtitle" style={{margin: "300px 0px"}}>No products found for this request</h2>
+                        }
                        
                     </div>
                     

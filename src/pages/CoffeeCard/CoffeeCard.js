@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import "./CoffeeCard.css"
-import {List} from "../../context"
+import { useFetching } from "../../context/request";
 
 import imgForCardHeader from "../../assets/img/our-coffee_header_bg.jpg";
 import Header from "../../components/Header/Header";
@@ -13,26 +13,21 @@ import Divider from "../../components/Divider/Divider";
 
 const CoffeeCard = () => {
 
+    const [fetching, isLoading, error] = useFetching(async () => {
+        let response = await fetch("./../db.json");
+        let data = await response.json();
+        if (data.length === 0) return setCoffeeCardId([]);
+        let dataId = data.filter(item => +item.id === +getId.id.replace(/:/g, "") ? item : null);
+        setCoffeeCardId(dataId);
+    });
+
     const getId = useParams();
-    
-    const {coffeeList, isLoading, error, setError} = useContext(List);
+
     const [coffeeCardId, setCoffeeCardId] = useState([]);
-
-    function searchId(property, arr) {
-        if (property === "") {
-            setCoffeeCardId([]);
-        } 
-        return arr.filter(item => +item.id === +getId.id ? item : null);
-    }
-
-    useEffect(() => {   
-        setError(null);
-        let id = searchId(getId.id.replace(/:/g, ""), coffeeList);
-        setCoffeeCardId(id);
-    }, [getId, coffeeList]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        fetching();
     }, [])
 
     return (
@@ -45,7 +40,10 @@ const CoffeeCard = () => {
                     : 
                         error 
                     ? 
-                        <h2 className="subtitle" style={{marginTop: 10}}>Sorry, there was an error</h2> 
+                        <>
+                            <h2 className="subtitle" style={{marginTop: 10}}>Sorry, there was an error</h2> 
+                            <h2 className="subtitle" style={{marginTop: 20}}>{error}</h2> 
+                        </>
                     :
                     coffeeCardId.length > 0 
                         ? 
@@ -71,8 +69,8 @@ const CoffeeCard = () => {
                       
                 }
  
-            </section>   
-            <Footer/>
+            </section>    
+            <Footer />
         </div>
     );
 };

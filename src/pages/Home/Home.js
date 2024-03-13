@@ -1,31 +1,25 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./Home.css";
-import { List } from "../../context";
+import { useFetching } from "../../context/request";
+
 import Divider from "../../components/Divider/Divider";
 import Footer from "../../components/Footer/Footer";
 import HeaderMain from "../../components/HeaderMain/HeaderMain";
 import Button from "../../components/button/Button";
 import CardsBlock from "../../components/CardsBlock/CardsBlock";
 
-
-
 const Home = () => {
-   
-    const {coffeeList, isLoading, error} = useContext(List);
+     
+    const [fetching, isLoading, error] = useFetching(async () => {
+        let response = await fetch("./db.json");
+        let data = await response.json();
+        let arr = data.filter(item => item.best ? item : null);
+        setBestCoffee(arr);
+    });
 
     const [bestCoffee, setBestCoffee] = useState([]);
     const [bestOffset, setBestOffset] = useState(3);
-
-    function getBests() {
-        let arrBest = [];
-        coffeeList.forEach(i => i.best ? arrBest.push(i) : null);
-        setBestCoffee(arrBest);
-    }
-
-    useEffect(() => {
-        getBests();
-    }, [coffeeList]);
 
     function moreOffset() {
         if ((bestCoffee.length - bestOffset) > 0) {
@@ -35,6 +29,7 @@ const Home = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        fetching();
     }, [])
 
     return (
@@ -42,7 +37,6 @@ const Home = () => {
             <HeaderMain />
             <section className="home_about">
                 <h2 className="subtitle home_about__subtitle">About Us</h2>
-                {/* <button style={{height: 40, width: 100}} onClick={app}></button> */}
                 <Divider/>
                 <div className="description home_about__description">
                     <p>Extremity sweetness difficult behaviour he of. On disposal of as landlord horrible.
@@ -65,13 +59,20 @@ const Home = () => {
                     : 
                         error 
                     ? 
-                        <h2 className="subtitle" style={{marginTop: 10}}>Sorry, there was an error</h2> 
+                        <>
+                            <h2 className="subtitle" style={{marginTop: 10}}>Sorry, there was an error</h2> 
+                            <h2 className="subtitle" style={{marginTop: 20}}>{error}</h2> 
+                        </>
                     :
+                        bestCoffee.length > 0 
+                    ?
                         <CardsBlock
                             offset={bestOffset} 
                             coffeeList={bestCoffee} 
                             origin={false}
                         />
+                    :
+                        <h2 className="subtitle" style={{marginTop: 10}}>Sorry, no offers today</h2> 
                 }
                 {bestCoffee.length - bestOffset > 0 ? 
                         <Button callback={moreOffset}/> : null }
